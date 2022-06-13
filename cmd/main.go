@@ -18,13 +18,11 @@ package main
 
 import (
 	"fmt"
-	"k8s.io/apimachinery/pkg/fields"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -63,12 +61,7 @@ func main() {
 		klog.Fatalf("failed to build kubernetes client,err:%s", err.Error())
 	}
 
-	factory := informers.NewSharedInformerFactoryWithOptions(kubeClient, resync,
-		informers.WithTweakListOptions(func(options *metav1.ListOptions) {
-			options.FieldSelector = fields.OneTermEqualSelector("reason", "SuccessfulRescale").String()
-			options.FieldSelector = fields.OneTermEqualSelector("reason", "ScaledUpGroup").String()
-			options.FieldSelector = fields.OneTermEqualSelector("reason", "ScaleDown").String()
-		}))
+	factory := informers.NewSharedInformerFactoryWithOptions(kubeClient, resync)
 	eventCollector := collector.NewEventCollector(kubeClient, factory, opts)
 	factory.Start(stopChan)
 

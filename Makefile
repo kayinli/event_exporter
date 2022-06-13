@@ -36,7 +36,7 @@ REGISTRY ?= caicloud/
 BASE_REGISTRY ?=
 
 ARCH ?=
-GO_VERSION ?= 1.13
+GO_VERSION ?= 1.18
 
 CPUS ?= $(shell /bin/bash hack/read_cpus_available.sh)
 
